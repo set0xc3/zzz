@@ -7,11 +7,12 @@ import (
 	"log"
 	"time"
 
+	"zzz/cmd/web"
+
 	"github.com/a-h/templ"
 	"github.com/coder/websocket"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"zzz/cmd/web"
 )
 
 func (s *Server) RegisterRoutes() http.Handler {
@@ -30,14 +31,8 @@ func (s *Server) RegisterRoutes() http.Handler {
 	fileServer := http.FileServer(http.FS(web.Files))
 	e.GET("/assets/*", echo.WrapHandler(fileServer))
 
-	e.GET("/web", echo.WrapHandler(templ.Handler(web.HelloForm())))
-	e.POST("/hello", echo.WrapHandler(http.HandlerFunc(web.HelloWebHandler)))
-
-	e.GET("/", s.HelloWorldHandler)
-
-	e.GET("/health", s.healthHandler)
-
-	e.GET("/websocket", s.websocketHandler)
+	e.GET("/views/clients", echo.WrapHandler(templ.Handler(web.TableClients())))
+	e.GET("/views/client/create", echo.WrapHandler(templ.Handler(web.FormClientCreate())))
 
 	return e
 }
